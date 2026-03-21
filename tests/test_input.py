@@ -19,3 +19,23 @@ class TestReadFromFile:
     def test_not_found(self):
         with pytest.raises(FileNotFoundError):
             read_from_file("no_file.txt")
+
+class TestReadFromFileWithPandas:
+
+    def test_success(self, tmp_path):
+        file = tmp_path / "test.csv"
+        file.write_text("a,b\n1,2", encoding="utf-8")
+
+        result = read_from_file_with_pandas(file)
+        assert "1" in result
+
+    def test_empty(self, tmp_path):
+        file = tmp_path / "empty.csv"
+        file.write_text("a,b\n", encoding="utf-8")
+
+        result = read_from_file_with_pandas(file)
+        assert "a" in result
+
+    def test_not_found(self):
+        with pytest.raises(FileNotFoundError):
+            read_from_file_with_pandas("no_file.csv")
